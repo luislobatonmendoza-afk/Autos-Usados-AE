@@ -1,74 +1,147 @@
-#Clasificación de Precios de Autos Usados con Machine Learning
+# 🚗 Clasificación de Precios de Autos Usados con Machine Learning
 
-Este proyecto implementa un sistema de aprendizaje supervisado para clasificar los precios de autos usados en tres categorías:
+Este proyecto implementa un sistema completo de Aprendizaje Supervisado cuyo objetivo es clasificar vehículos usados en tres categorías de precio: Económicos, Medios y Premium. El modelo fue desarrollado en Google Colab utilizando un dataset de Kaggle y técnicas de preprocesamiento, normalización y clasificación con Random Forest, cumpliendo con los lineamientos del curso de Aprendizaje Estadístico.
 
-Económicos
+---
 
-Medios
+## 🧠 Tecnologías Utilizadas
 
-Premium
+- Python 3
+- Google Colab
+- Pandas
+- NumPy
+- Scikit-learn
+- Matplotlib
+- Seaborn
+- KaggleHub
 
-El modelo fue desarrollado en Google Colab, utilizando el dataset público de Kaggle y técnicas de preprocesamiento, normalización y clasificación con Random Forest.
+---
 
-#🧠 Tecnologías Utilizadas
+## 📂 Estructura del Repositorio
 
-Python 3
+El repositorio está organizado de la siguiente manera:
 
-Google Colab
+documentacion/  
+└── informe_proyecto.pdf (opcional)
 
-Pandas
+codigo/  
+├── autos_usados.ipynb  
+├── autos_usados.py  
+└── requirements.txt
 
-Numpy
+pruebas/  
+├── matriz_confusion.png  
+├── importancia_variables.png  
+└── pruebas_prediccion.md
 
-Scikit-learn
-
-Matplotlib / Seaborn
-
-KaggleHub (para descargar dataset automáticamente)
-
-#📝 Estructura del Proyecto
-documentacion/
-codigo/
-pruebas/
 README.md
 
-#⚙ Cómo Ejecutar el Proyecto
+---
 
-Clonar el repositorio:
+## ⚙️ Cómo Ejecutar el Proyecto
 
-git clone https://github.com/<tu-usuario>/clasificacion-autos-usados-ml.git
+### 1. Clonar el repositorio
 
+git clone https://github.com/<TU-USUARIO>/clasificacion-autos-usados-ml.git
 
-Instalar dependencias:
+### 2. Instalar dependencias
 
 pip install -r requirements.txt
 
+### 3. Abrir el Notebook
 
-Abrir el notebook en Google Colab o Jupyter:
+Puede ejecutarse desde Google Colab o Jupyter Notebook. El archivo principal es autos_usados.ipynb.
 
-autos_usados.ipynb
+### 4. Ejecutar todas las celdas
 
+El notebook realiza automáticamente la descarga del dataset, preprocesamiento, normalización, entrenamiento del modelo Random Forest, evaluación del sistema, generación de métricas y pruebas reales mediante una función interactiva de predicción.
 
-Ejecutar todas las celdas.
+---
 
-#🚗 Modelo Entrenado
+## 🔍 Descripción del Modelo
 
-El modelo final utilizado fue:
+### ✔ Preprocesamiento aplicado
 
-Random Forest Classifier
+- Eliminación de valores nulos
+- Eliminación de duplicados
+- Limpieza de atributos numéricos
+- Conversión de datos categóricos mediante LabelEncoder
+- Normalización parcial de variables numéricas
 
-200 árboles
+### ✔ Etiquetado del precio
 
-Accuracy final: ~73%
+El precio fue transformado en tres categorías usando percentiles:
+- Económico (0-33%)
+- Medio (34-66%)
+- Premium (67-100%)
 
-Validación cruzada K-Fold: estable
+### ✔ División del dataset
 
-#📊 Resultados del Sistema
+- 80% entrenamiento
+- 20% prueba
 
-Matriz de confusión
+### ✔ Modelo final implementado
 
-Reporte de clasificación
+Modelo: Random Forest Classifier  
+Parámetros clave:  
+- n_estimators = 200  
+- random_state = 42  
 
-Importancia de variables
+### ✔ Resultados del modelo
 
-Pruebas de predicción con predecir_auto()
+- Accuracy: 73%
+- F1-score balanceado
+- Estabilidad entre ejecuciones
+
+---
+
+## 📊 Resultados del Sistema
+
+El repositorio incluye:
+
+### ✔ Matriz de Confusión
+Ubicada en pruebas/matriz_confusion.png
+
+### ✔ Importancia de Variables
+Ubicada en pruebas/importancia_variables.png
+
+Variables más influyentes:
+- Año del vehículo
+- Kilometraje
+- Marca
+- Transmisión
+- Tipo de combustible
+
+### ✔ Reporte de Clasificación
+Incluye precisión, recall y F1-score por clase.
+
+### ✔ Pruebas manuales
+Incluidas en pruebas/pruebas_prediccion.md  
+La función predecir_auto() permite ingresar datos reales de vehículos.
+
+---
+
+# 🚀 Deploy del Sistema (Descripción Técnica)
+
+Aunque no se construyó una aplicación web, se deja planteada la arquitectura de despliegue recomendada:
+
+## ▶ 1. Exportación del Modelo
+
+import joblib  
+joblib.dump(rf, "modelo_autos.joblib")
+
+## ▶ 2. API REST con FastAPI (estructura recomendada)
+
+from fastapi import FastAPI  
+import joblib  
+import pandas as pd  
+
+app = FastAPI()  
+modelo = joblib.load("modelo_autos.joblib")  
+
+@app.post("/predecir")  
+def predecir(data: dict):  
+ entrada = pd.DataFrame([data])  
+ pred = modelo.predict(entrada)[0]  
+ return {"categoria_predicha": pred}
+
